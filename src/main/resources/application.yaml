@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: upsider-kadai
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kadai
+    username: kadai
+    password: letmein
+    driver-class-name: org.postgresql.Driver
+  web:
+    error:
+      include-message: always
+
+server:
+  port: 8080
+  compression:
+    enabled: true

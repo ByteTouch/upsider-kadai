@@ -1,0 +1,15 @@
+{
+    "editor.codeActionsOnSave": { "source.organizeImports": "explicit" },
+    "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.debug.settings.vmArgs": "-XX:+UseParallelGC -Duser.timezone=Asia/Tokyo",
+    "java.maven.downloadSources": true,
+    "java.test.config": {
+        "name": "testing",
+        "vmArgs": [
+            "-XX:+UseParallelGC",
+            "-Duser.timezone=Asia/Tokyo"
+        ]
+    }
+}

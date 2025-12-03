@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-boot-dev-pack",
+        "redhat.vscode-xml",
+        "shengchen.vscode-checkstyle",
+        "ms-azuretools.vscode-docker"
+    ]
+}
