@@ -1,6 +1,7 @@
 package com.example.upsider_kadai.aggregates.auth.login;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,6 +37,8 @@ public class LoginService {
 
     private final JsonMapper jsonMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     static {
         try {
             signer = new MACSigner(ContextFilter.HMAC_SECRET);
@@ -48,9 +51,8 @@ public class LoginService {
     public ResponseLogin login(String email, String password) {
         var user = this.userRepository.findByEmail(email)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email is not registered."));
-        // TODO encode password
         try {
-            if (password.equals(user.getEncodedPassword())) {
+            if (this.passwordEncoder.matches(password, user.getEncodedPassword())) {
                 String accessToken = this.generateJwsToken(user);
                 this.saveLogin(user, AuthResult.SUCCESS);
                 return new ResponseLogin(accessToken);

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -24,6 +25,9 @@ public class UserTests extends AbstractApiTests {
 
     @Autowired
     private JsonMapper jsonMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     @AfterEach
@@ -48,7 +52,8 @@ public class UserTests extends AbstractApiTests {
             softly.assertThat(user.getCompanyName()).isEqualTo(reqBody.companyName());
             softly.assertThat(user.getName()).isEqualTo(reqBody.name());
             softly.assertThat(user.getEmail()).isEqualTo(reqBody.email());
-            // TODO encoded password
+            softly.assertThat(user.getEncodedPassword()).isNotEqualTo(reqBody.password());
+            softly.assertThat(this.passwordEncoder.matches(reqBody.password(), user.getEncodedPassword())).isTrue();
         });
     }
 
