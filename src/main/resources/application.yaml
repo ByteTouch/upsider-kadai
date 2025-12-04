@@ -17,3 +17,8 @@ server:
   port: 8080
   compression:
     enabled: true
+
+aggregates:
+  invoice:
+    fee-rate: 4
+    tax-rate: 10
