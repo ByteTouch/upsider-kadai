@@ -75,6 +75,11 @@ public class InvoiceService {
         if (! Objects.equals(userId, RequestContext.SCOPED_VALUE.get().userId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+
+        if (paymentDueDateFrom.isAfter(paymentDueDateTo)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'paymentDueDateFrom' must be before than 'paymentDueDateTo'.");
+        }
+
         return this.invoiceRepository.findByUserIdAndPaymentDueDateBetweenOrderByPaymentDueDate(userId, paymentDueDateFrom, paymentDueDateTo ,PageRequest.of(pageNumber, pageSize));
     }
 }

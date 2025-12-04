@@ -8,6 +8,8 @@ CREATE TABLE "users" (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE INDEX users_email ON users (email);
+
 CREATE TABLE "logins" (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(id),
