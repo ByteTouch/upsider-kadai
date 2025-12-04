@@ -19,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(ContextFilter.USER_REGISTRATION_ENDPOINT)
-    public ResponseEntity<User> register(@RequestBody @Valid RequestRegister requset) {
+    public ResponseEntity<User> register(@RequestBody @Valid RequestRegisterUser requset) {
         var entity = this.userService.register(requset.companyName(), requset.name(), requset.email(), requset.password());
         return ResponseEntity.ok(entity);
     }

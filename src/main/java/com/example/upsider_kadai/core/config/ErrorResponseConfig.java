@@ -18,10 +18,9 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 /**
  * For the exceptions handled by {@link ResponseEntityExceptionHandler#handleException}, override those concrete handler methods called by it.<br/><br/>
@@ -67,18 +66,15 @@ public class ErrorResponseConfig extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+            HttpMessageNotReadableException e, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-        if (ex.getCause() instanceof InvalidFormatException vie
-            && vie.getTargetType() != null
-            && vie.getTargetType().isEnum()) {
-
+        if (e.getCause() instanceof InvalidFormatException ex) {
             return new ResponseEntity<>(
-                new ErrorResponse(String.format("Invalid enum value '%s' for field '%s'.", vie.getValue(), vie.getPath().getLast().getFieldName())),
+                new ErrorResponse(String.format("Invalid value '%s' for field '%s'.", ex.getValue(), ex.getPath().getLast().getPropertyName())),
                 headers,
                 HttpStatusCode.valueOf(400));
         }
-        return super.handleHttpMessageNotReadable(ex, headers, status, request);
+        return new ResponseEntity<>(new ErrorResponse("Failed to read request."), headers, status);
     }
 
     @ExceptionHandler({

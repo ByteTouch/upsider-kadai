@@ -12,14 +12,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
-import com.example.upsider_kadai.aggregates.auth.user.RequestRegister;
+import com.example.upsider_kadai.aggregates.auth.user.RequestRegisterUser;
 import com.example.upsider_kadai.aggregates.auth.user.UserRepository;
+import com.example.upsider_kadai.aggregates.auth.user.UserTests;
 import com.example.upsider_kadai.core.AbstractApiTests;
 
 import tools.jackson.databind.json.JsonMapper;
 
-class LoginTests extends AbstractApiTests {
+public class LoginTests extends AbstractApiTests {
     
     @Autowired
     private LoginRepository loginRepository;
@@ -38,15 +41,16 @@ class LoginTests extends AbstractApiTests {
     }
 
     @Test
-    void login() throws Exception {
+    void test_login_withValidCredentials_shouldReturnJws() throws Exception {
         // given
         var email = "upsider@gmail.com";
         var password = "letmein";
-        this.registerUser(email, password);
+        var requestRegister = new RequestRegisterUser("upsider", "upsider", email, password);
+        UserTests.registerUser(this.mockMvc, this.jsonMapper, requestRegister);
 
         // when
         var reqBody = new RequestLogin(email, password);
-        var res = this.mockMvc.perform(post("/login")
+        ResultActions res = this.mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(this.jsonMapper.writeValueAsBytes(reqBody)));
         
@@ -54,8 +58,8 @@ class LoginTests extends AbstractApiTests {
         res.andExpectAll(
             status().isOk(),
             content().contentType(MediaType.APPLICATION_JSON));
-        ResponseLogin resBody = this.jsonMapper.readValue(res.andReturn().getResponse().getContentAsByteArray(), ResponseLogin.class);
-        String[] tokenParts = resBody.accessToken().split("\\.");
+        ResponseLogin responseLogin = this.jsonMapper.readValue(res.andReturn().getResponse().getContentAsByteArray(), ResponseLogin.class);
+        String[] tokenParts = responseLogin.accessToken().split("\\.");
         assertThat(tokenParts).hasSize(3);
 
         assertThat(Arrays.copyOf(tokenParts, 2)).allSatisfy(s -> {
@@ -64,10 +68,11 @@ class LoginTests extends AbstractApiTests {
         // 3rd part is base64-url
     }
 
-    private void registerUser(String email, String password) throws Exception {
-        var reqBody = new RequestRegister("upsider", "taro", email, password);
-        this.mockMvc.perform(post("/users/register")
+    public static String login(MockMvc mockMvc, JsonMapper jsonMapper, RequestLogin request) throws Exception {
+        ResultActions res = mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(this.jsonMapper.writeValueAsBytes(reqBody)));
+            .content(jsonMapper.writeValueAsBytes(request)));
+        ResponseLogin responseLogin = jsonMapper.readValue(res.andReturn().getResponse().getContentAsByteArray(), ResponseLogin.class);
+        return responseLogin.accessToken();
     }
 }

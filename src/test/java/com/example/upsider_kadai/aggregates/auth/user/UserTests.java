@@ -10,13 +10,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.example.upsider_kadai.core.AbstractApiTests;
 
 import tools.jackson.databind.json.JsonMapper;
 
-class UserTests extends AbstractApiTests {
+public class UserTests extends AbstractApiTests {
     
     @Autowired
     private UserRepository userRepository;
@@ -31,9 +32,9 @@ class UserTests extends AbstractApiTests {
     }
 
     @Test
-    void register() throws Exception {
+    void test_registerUser_withValidInfo_shouldSucceed() throws Exception {
         // when
-        var reqBody = new RequestRegister("upsider", "taro", "upsider@gmail.com", "letmein");
+        var reqBody = new RequestRegisterUser("upsider", "taro", "upsider@gmail.com", "letmein");
         ResultActions res = this.mockMvc.perform(post("/users/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(this.jsonMapper.writeValueAsBytes(reqBody)));
@@ -42,12 +43,21 @@ class UserTests extends AbstractApiTests {
         res.andExpectAll(
             status().isOk(),
             content().contentType(MediaType.APPLICATION_JSON));
-        User resBody = this.jsonMapper.readValue(res.andReturn().getResponse().getContentAsByteArray(), User.class);
+        User user = this.jsonMapper.readValue(res.andReturn().getResponse().getContentAsByteArray(), User.class);
         assertSoftly(softly -> {
-            softly.assertThat(resBody.getCompanyName()).isEqualTo(reqBody.companyName());
-            softly.assertThat(resBody.getName()).isEqualTo(reqBody.name());
-            softly.assertThat(resBody.getEmail()).isEqualTo(reqBody.email());
+            softly.assertThat(user.getCompanyName()).isEqualTo(reqBody.companyName());
+            softly.assertThat(user.getName()).isEqualTo(reqBody.name());
+            softly.assertThat(user.getEmail()).isEqualTo(reqBody.email());
             // TODO encoded password
         });
+    }
+
+    public static int registerUser(MockMvc mockMvc, JsonMapper jsonMapper, RequestRegisterUser request) throws Exception {
+        var reqBody = new RequestRegisterUser(request.companyName(), request.name(), request.email(), request.password());
+        ResultActions res = mockMvc.perform(post("/users/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonMapper.writeValueAsBytes(reqBody)));
+        User user = jsonMapper.readValue(res.andReturn().getResponse().getContentAsByteArray(), User.class);
+        return user.getId();
     }
 }

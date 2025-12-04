@@ -2,6 +2,7 @@ package com.example.upsider_kadai.aggregates.auth.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ public class UserService {
     
     private final UserRepository userRepository;
 
+    @Transactional
     public User register(String companyName, String name, String email, String password) {
         boolean alreadyExists = this.userRepository.existsByEmail(email);
         if (alreadyExists) {

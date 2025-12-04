@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.example.upsider_kadai.core.util.InstantUtils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.AccessLevel;
@@ -37,7 +38,7 @@ public class User {
     private Instant updatedAt;
 
     public static User create(String companyName, String name, String email, String hashedPassword) {
-        var now = Instant.now();
+        var now = InstantUtils.millisNow();
         return new User(null, companyName, name, email, hashedPassword, now, now);
     }
 }

@@ -2,6 +2,7 @@ package com.example.upsider_kadai.aggregates.auth.login;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.upsider_kadai.aggregates.auth.login.Login.AuthResult;
@@ -43,6 +44,7 @@ public class LoginService {
         }
     }
 
+    @Transactional
     public ResponseLogin login(String email, String password) {
         var user = this.userRepository.findByEmail(email)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email is not registered."));
@@ -65,7 +67,7 @@ public class LoginService {
     }
 
     private String generateJwsToken(User user) throws JOSEException {
-        var payload = new JwtPayload(user.getCompanyName(), user.getName(), user.getEmail());
+        var payload = new JwtPayload(user.getId(), user.getCompanyName(), user.getName(), user.getEmail());
         var jwsObject = new JWSObject(new JWSHeader(JWSAlgorithm.HS256), new Payload(this.jsonMapper.writeValueAsBytes(payload)));
         jwsObject.sign(signer);
         return jwsObject.serialize();

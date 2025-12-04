@@ -88,6 +88,7 @@ public class ContextFilter implements Filter {
             JwtPayload payload = this.jsonMapper.readValue(jwsObject.getPayload().toBytes(), JwtPayload.class);
 
             var context = new RequestContext(
+                payload.userId(),
                 payload.companyName(),
                 payload.name(),
                 payload.email()

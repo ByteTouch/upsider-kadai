@@ -6,6 +6,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.example.upsider_kadai.core.util.InstantUtils;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +31,7 @@ public class Login {
     private final Instant createdAt;
 
     public static Login create(Integer userId, AuthResult authResult) {
-        return new Login(null, userId, authResult, Instant.now());
+        return new Login(null, userId, authResult, InstantUtils.millisNow());
     }
 
     public enum AuthResult {

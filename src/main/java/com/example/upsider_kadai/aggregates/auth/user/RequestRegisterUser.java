@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
-public record RequestRegister(
+public record RequestRegisterUser(
 
     @NotBlank
     @Length(max = 200)
