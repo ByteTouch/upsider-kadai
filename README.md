@@ -14,7 +14,7 @@
 
 最初は推奨テックスタック（Kotlin, Ktor, Exposed）でチャレンジするつもりでしたが、やっている中でこの課題が広い範囲の技術力を要求すると感じて、自分の慣れていないテックスタックでは短期間で品質の良いものを作るのが難しいと判断し、Javaに切り替えました。
 
-この Java プロジェクトは自慢のプラクティスで作りました。開発体験、アーキテクトなどをしっかり工夫しました。Java と SpringBoot のバージョンが最新です。Ktor と比較して頂ける良いチャンスだと思います。
+この Java プロジェクトは自慢のプラクティスで作りました。開発体験、アーキテクチャなどをしっかり工夫しました。Java と SpringBoot のバージョンが最新です。Ktor と比較して頂ける良いチャンスだと思います。
 
 以下は一部の特徴です。
 - Java 25 [Compact Object Header](https://openjdk.org/jeps/519) を利用し、メモリコストを削減
@@ -109,7 +109,8 @@ response body
     "companyName":"upsider",
     "name":"upsider",
     "email":"upsider@gmail.com",
-    "encodedPassword":"{bcrypt}$2a$10$KUpyjYC3goNxc97.KnQunuUCstw0VK1hedKaTGtRdHBmFm9qVdQ5q","createdAt":"2025-12-04T17:06:15.806Z",
+    "encodedPassword":"{bcrypt}$2a$10$KUpyjYC3goNxc97.KnQunuUCstw0VK1hedKaTGtRdHBmFm9qVdQ5q",
+    "createdAt":"2025-12-04T17:06:15.806Z",
     "updatedAt":"2025-12-04T17:06:15.806Z"
 }
 ```
